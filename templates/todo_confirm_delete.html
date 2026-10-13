@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Vazifani o'chirish{% endblock %}
+
+{% block content %}
+<section class="panel danger-zone">
+    <div class="big">🗑️</div>
+    <h1>Vazifani o'chirasizmi?</h1>
+    <p class="sub">Bu amalni ortga qaytarib bo'lmaydi.</p>
+
+    <div class="quote">{{ object.title }}</div>
+
+    <form method="post">
+        {{ csrf_input }}
+        <div class="form-actions" style="justify-content:center">
+            <a class="btn" href="{{ url('home') }}">Bekor qilish</a>
+            <button class="btn btn-danger" type="submit">Ha, o'chirish</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

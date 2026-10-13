@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Vazifalar{% endblock %}
+
+{% block content %}
+<div class="page-head">
+    <div>
+        <h1>Mening vazifalarim</h1>
+        <p>Kunlik rejangizni tartibga soling va bajarilganlarini belgilab boring.</p>
+    </div>
+</div>
+
+<section class="stats">
+    <div class="stat">
+        <div class="ico ico-all">📋</div>
+        <div><div class="num">{{ total }}</div><div class="lbl">Jami vazifalar</div></div>
+    </div>
+    <div class="stat">
+        <div class="ico ico-active">⏳</div>
+        <div><div class="num">{{ active_count }}</div><div class="lbl">Jarayonda</div></div>
+    </div>
+    <div class="stat">
+        <div class="ico ico-done">✅</div>
+        <div><div class="num">{{ done_count }}</div><div class="lbl">Bajarilgan</div></div>
+    </div>
+</section>
+
+<section class="toolbar">
+    <form class="search" method="get" action="{{ url('home') }}">
+        <span>🔍</span>
+        <input class="input" type="search" name="q" value="{{ q }}" placeholder="Vazifalarni qidirish...">
+        {% if status %}<input type="hidden" name="status" value="{{ status }}">{% endif %}
+    </form>
+
+    <nav class="tabs">
+        <a class="tab {{ 'active' if not status else '' }}" href="?{% if q %}q={{ q|urlencode }}{% endif %}">Hammasi</a>
+        <a class="tab {{ 'active' if status == 'active' else '' }}" href="?status=active{% if q %}&amp;q={{ q|urlencode }}{% endif %}">Jarayonda</a>
+        <a class="tab {{ 'active' if status == 'done' else '' }}" href="?status=done{% if q %}&amp;q={{ q|urlencode }}{% endif %}">Bajarilgan</a>
+    </nav>
+</section>
+
+{% if todos %}
+<section class="grid">
+    {% for todo in todos %}
+    <article class="card {{ 'done' if todo.is_done else '' }}">
+        {% if todo.is_done %}
+        <span class="badge badge-done">✓ Bajarilgan</span>
+        {% else %}
+        <span class="badge badge-active">● Jarayonda</span>
+        {% endif %}
+
+        <h3>{{ todo.title }}</h3>
+        <p>{{ todo.description|truncate(130) }}</p>
+        <div class="meta">🕒 {{ (todo.created_at|localtime).strftime('%d.%m.%Y %H:%M') }}</div>
+
+        <div class="actions">
+            <a class="btn btn-sm" href="{{ url('todo_update', args=[todo.pk]) }}">✏️ Tahrirlash</a>
+            <a class="btn btn-sm btn-ghost" href="{{ url('todo_delete', args=[todo.pk]) }}">🗑 O'chirish</a>
+        </div>
+    </article>
+    {% endfor %}
+</section>
+
+{% if is_paginated %}
+<nav class="pager">
+    {% if page_obj.has_previous() %}
+    <a class="btn btn-sm" href="?page={{ page_obj.previous_page_number() }}{% if extra_query %}&amp;{{ extra_query }}{% endif %}">← Oldingi</a>
+    {% else %}
+    <span class="btn btn-sm disabled">← Oldingi</span>
+    {% endif %}
+
+    <span class="cur">{{ page_obj.number }} / {{ paginator.num_pages }}</span>
+
+    {% if page_obj.has_next() %}
+    <a class="btn btn-sm" href="?page={{ page_obj.next_page_number() }}{% if extra_query %}&amp;{{ extra_query }}{% endif %}">Keyingi →</a>
+    {% else %}
+    <span class="btn btn-sm disabled">Keyingi →</span>
+    {% endif %}
+</nav>
+{% endif %}
+
+{% else %}
+<section class="empty">
+    <div class="big">🗒️</div>
+    <h3>Hozircha vazifalar yo'q</h3>
+    <p>{% if q or status %}Qidiruv yoki filtr bo'yicha hech narsa topilmadi.{% else %}Birinchi vazifangizni qo'shib boshlang!{% endif %}</p>
+    <a class="btn btn-primary" href="{{ url('todo_create') }}">＋ Vazifa qo'shish</a>
+</section>
+{% endif %}
+{% endblock %}

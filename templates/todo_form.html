@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Vazifani tahrirlash' if object else 'Yangi vazifa' }}{% endblock %}
+
+{% block content %}
+<section class="panel">
+    <h1>{{ '✏️ Vazifani tahrirlash' if object else '✨ Yangi vazifa' }}</h1>
+    <p class="sub">{{ "Ma'lumotlarni o'zgartiring va saqlang." if object else "Yangi vazifa uchun sarlavha va tavsif kiriting." }}</p>
+
+    <form method="post" novalidate>
+        {{ csrf_input }}
+
+        {% for err in form.non_field_errors() %}
+        <div class="error">{{ err }}</div>
+        {% endfor %}
+
+        <div class="field">
+            <label class="lbl" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+            {{ form.title }}
+            {% for err in form.title.errors %}<div class="error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+            <label class="lbl" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+            {{ form.description }}
+            {% for err in form.description.errors %}<div class="error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="field">
+            <label class="switch">
+                {{ form.is_done }}
+                <span class="slider"></span>
+                <span>{{ form.is_done.label }}</span>
+            </label>
+            {% for err in form.is_done.errors %}<div class="error">{{ err }}</div>{% endfor %}
+        </div>
+
+        <div class="form-actions">
+            <a class="btn" href="{{ url('home') }}">Bekor qilish</a>
+            <button class="btn btn-primary" type="submit">{{ '💾 Saqlash' if object else '＋ Qo\'shish' }}</button>
+        </div>
+    </form>
+</section>
+{% endblock %}

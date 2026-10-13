@@ -1,0 +1,6 @@
+Django==6.1.2
+asgiref==3.12.1
+sqlparse==0.6.0
+Jinja2>=3.1
+psycopg[binary]>=3.2
+tzdata
